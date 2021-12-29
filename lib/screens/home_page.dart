@@ -36,12 +36,9 @@ class _HomePageState extends State<HomePage> {
   }
 
   //Listeye veri girdisi sağlar
-  void _addNewTransaction(String title, double amount) {
+  void _addNewTransaction(String title, double amount, DateTime date) {
     final newTx = Transaction(
-        amount: amount,
-        date: DateTime.now(),
-        id: '${amount.toInt()}',
-        title: title);
+        amount: amount, date: date, id: '${amount.toInt()}', title: title);
     setState(() {
       _userTransactions.add(newTx);
     });
@@ -57,6 +54,15 @@ class _HomePageState extends State<HomePage> {
               onTap: () => Navigator.of(context).pop(),
               child: NewTransaction(addTransaction: _addNewTransaction));
         });
+  }
+
+  //Girdinin Silinmesini sağlar
+  void _deleteTransaction(String id) {
+    setState(() {
+      _userTransactions.removeWhere((element) {
+        return element.id == id;
+      });
+    });
   }
 
   @override
@@ -80,11 +86,10 @@ class _HomePageState extends State<HomePage> {
               child: Chart(
                 recentTransactions: _recentTransactions,
               ),
-              decoration: BoxDecoration(
-                  border: Border.all(width: 2, color: Colors.black)),
             ),
             TransActionList(
               entries: _userTransactions,
+              deleteTX: _deleteTransaction,
             )
           ]),
       floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,

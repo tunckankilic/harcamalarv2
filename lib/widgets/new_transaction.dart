@@ -1,6 +1,7 @@
 // ignore_for_file: prefer_const_constructors
 
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 
 class NewTransaction extends StatefulWidget {
   final Function addTransaction;
@@ -11,21 +12,42 @@ class NewTransaction extends StatefulWidget {
 }
 
 class _NewTransactionState extends State<NewTransaction> {
-  TextEditingController taskControl = TextEditingController();
+  TextEditingController _taskControl = TextEditingController();
 
-  TextEditingController amountControl = TextEditingController();
+  TextEditingController _amountControl = TextEditingController();
+  DateTime _selectedDate = DateTime.now();
 
   void submitData() {
-    final titleEntried = taskControl.text;
-    final amountEntried = double.parse(amountControl.text);
-    if (titleEntried.isEmpty || amountEntried <= 0) {
+    if (_amountControl.text.isEmpty) {
+      return;
+    }
+    final _titleEntried = _taskControl.text;
+    final _amountEntried = double.parse(_amountControl.text);
+    if (_titleEntried.isEmpty || _amountEntried <= 0) {
       return;
     }
     widget.addTransaction(
-      titleEntried,
-      amountEntried,
+      _titleEntried,
+      _amountEntried,
+      _selectedDate
     );
     Navigator.of(context).pop();
+  }
+
+  void _presentDatePicker() {
+    showDatePicker(
+            context: context,
+            initialDate: DateTime.now(),
+            firstDate: DateTime.utc(1989),
+            lastDate: DateTime.utc(2099))
+        .then((pickedDate) {
+      if (pickedDate == null) {
+        return;
+      }
+      setState(() {
+        _selectedDate = pickedDate;
+      });
+    });
   }
 
   @override
@@ -45,7 +67,7 @@ class _NewTransactionState extends State<NewTransaction> {
                 fillColor: Colors.white,
                 filled: true,
               ),
-              controller: taskControl,
+              controller: _taskControl,
             ),
             SizedBox(
               height: 10,
@@ -56,15 +78,43 @@ class _NewTransactionState extends State<NewTransaction> {
                 fillColor: Colors.white,
                 filled: true,
               ),
-              controller: amountControl,
+              controller: _amountControl,
             ),
-            ElevatedButton(
-              onPressed: () {
-                submitData();
-              },
-              child: Text('Girdi Ekle'),
-              style: ElevatedButton.styleFrom(
-                  primary: Colors.red[900], onPrimary: Colors.white),
+            Row(
+              children: [
+                SizedBox(
+                  width: 10,
+                ),
+                Text(
+                  (_selectedDate == null)
+                      ? 'Tarih Seç'
+                      : 'Tarih: ${DateFormat.yMd().format(_selectedDate)}',
+                  style: TextStyle(
+                      fontSize: 20,
+                      color: Colors.white,
+                      fontWeight: FontWeight.bold),
+                ),
+                Spacer(),
+                Column(
+                  children: [
+                    ElevatedButton(
+                      onPressed: _presentDatePicker,
+                      child: Text('Tarih Seç'),
+                    ),
+                    SizedBox(
+                      width: 20,
+                    ),
+                    ElevatedButton(
+                      onPressed: () {
+                        submitData();
+                      },
+                      child: Text('Girdi Ekle'),
+                      style: ElevatedButton.styleFrom(
+                          primary: Colors.red[900], onPrimary: Colors.white),
+                    ),
+                  ],
+                ),
+              ],
             ),
           ],
         ),

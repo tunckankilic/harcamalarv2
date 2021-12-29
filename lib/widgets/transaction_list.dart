@@ -7,8 +7,10 @@ import 'package:intl/intl.dart';
 
 class TransActionList extends StatelessWidget {
   final List<Transaction> entries;
+  final Function deleteTX;
 
   TransActionList({
+    required this.deleteTX,
     required this.entries,
   });
   @override
@@ -26,55 +28,53 @@ class TransActionList extends StatelessWidget {
                   elevation: 11,
                   margin: EdgeInsets.all(5),
                   child: ListTile(
-                    title: Text(
-                      entries[index].title,
-                      style: TextStyle(
-                        color: Colors.indigo[900],
-                        fontFamily: 'OpenSans',
-                        fontSize: 20,
-                        fontWeight: FontWeight.bold,
-                      ),
-                    ),
-                    leading: Container(
-                      decoration: BoxDecoration(
-                        color: Colors.black,
-                        borderRadius: BorderRadius.circular(25.0),
-                        border: Border.all(
-                          width: 5.0,
-                          color: Theme.of(context).primaryColor,
-                        ),
-                      ),
-                      padding: EdgeInsets.all(5.0),
-                      margin: EdgeInsets.symmetric(
-                          vertical: 10.0, horizontal: 15.0),
-                      child: Text(
-                        //double değerlerin stringe dönüşütürülüp kısıtlanmasını sağlan fonksiyon
-                        '\$${entries[index].amount.toStringAsFixed(2)}',
+                      title: Text(
+                        entries[index].title,
                         style: TextStyle(
-                            color: Colors.white,
-                            fontWeight: FontWeight.bold,
-                            fontSize: 15),
-                      ),
-                    ),
-                    subtitle: Text(
-                      //intl paketi ile datetime yerine dateformat kullanılır
-                      //date format daha detaylı ve daha tutarlıdır
-                      DateFormat.yMMMd().format(entries[index].date),
-                      style: TextStyle(
-                          fontSize: 15,
-                          color: Theme.of(context).primaryColor,
-                          fontWeight: FontWeight.w300),
-                    ),
-                    trailing: Column(
-                      children: [
-                        Column(
-                          children: [
-                            Text('#${entries[index].id}'),
-                          ],
+                          color: Colors.indigo[900],
+                          fontFamily: 'OpenSans',
+                          fontSize: 20,
+                          fontWeight: FontWeight.bold,
                         ),
-                      ],
-                    ),
-                  ),
+                      ),
+                      leading: Container(
+                        decoration: BoxDecoration(
+                          color: Colors.black,
+                          borderRadius: BorderRadius.circular(25.0),
+                          border: Border.all(
+                            width: 5.0,
+                            color: Theme.of(context).primaryColor,
+                          ),
+                        ),
+                        padding: EdgeInsets.all(5.0),
+                        margin: EdgeInsets.symmetric(
+                            vertical: 10.0, horizontal: 15.0),
+                        child: Text(
+                          //double değerlerin stringe dönüşütürülüp kısıtlanmasını sağlan fonksiyon
+                          '\$${entries[index].amount.toStringAsFixed(2)}',
+                          style: TextStyle(
+                              color: Colors.white,
+                              fontWeight: FontWeight.bold,
+                              fontSize: 15),
+                        ),
+                      ),
+                      subtitle: Text(
+                        //intl paketi ile datetime yerine dateformat kullanılır
+                        //date format daha detaylı ve daha tutarlıdır
+                        DateFormat.yMMMd().format(entries[index].date),
+                        style: TextStyle(
+                            fontSize: 15,
+                            color: Theme.of(context).primaryColor,
+                            fontWeight: FontWeight.w300),
+                      ),
+                      trailing: IconButton(
+                        onPressed: () => deleteTX(entries[index].id),
+                        icon: Icon(
+                          Icons.delete,
+                          color: Theme.of(context).primaryColorDark,
+                          size: 40,
+                        ),
+                      )),
                 );
               },
             ),
