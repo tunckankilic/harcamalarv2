@@ -1,6 +1,7 @@
 // ignore_for_file: prefer_const_constructors, sized_box_for_whitespace
 
 import 'package:flutter/material.dart';
+import 'package:harcamalarv2/widgets/chart.dart';
 import 'package:harcamalarv2/widgets/new_transaction.dart';
 import 'package:harcamalarv2/widgets/transaction_list.dart';
 
@@ -13,20 +14,28 @@ class HomePage extends StatefulWidget {
 
 class _HomePageState extends State<HomePage> {
   final List<Transaction> _userTransactions = [
-    Transaction(
-      amount: 99.99,
-      date: DateTime.now(),
-      id: '1',
-      title: 'Fender Guitar',
-    ),
-    Transaction(
-      amount: 66.99,
-      date: DateTime.now(),
-      id: '2',
-      title: 'Yamaha Guitar',
-    ),
+    // Transaction(
+    //   amount: 99.99,
+    //   date: DateTime.now(),
+    //   id: '1',
+    //   title: 'Fender Guitar',
+    // ),
+    // Transaction(
+    //   amount: 66.99,
+    //   date: DateTime.now(),
+    //   id: '2',
+    //   title: 'Yamaha Guitar',
+    // ),
   ];
 
+  //listeden filtre uygulanarak veri çekimini sağlar
+  List<Transaction> get _recentTransactions {
+    return _userTransactions.where((tx) {
+      return tx.date.isAfter(DateTime.now().subtract(Duration(days: 7)));
+    }).toList();
+  }
+
+  //Listeye veri girdisi sağlar
   void _addNewTransaction(String title, double amount) {
     final newTx = Transaction(
         amount: amount,
@@ -68,9 +77,8 @@ class _HomePageState extends State<HomePage> {
             Container(
               width: double.infinity,
               padding: EdgeInsets.all(10),
-              child: Text(
-                'CHARTT',
-                textAlign: TextAlign.center,
+              child: Chart(
+                recentTransactions: _recentTransactions,
               ),
               decoration: BoxDecoration(
                   border: Border.all(width: 2, color: Colors.black)),
